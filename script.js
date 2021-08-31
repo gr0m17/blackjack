@@ -28,6 +28,8 @@ let cardCount = 0;
 let cardhtml;
 let aceCount;
 let downCard;
+let playerScore = 0;
+let needShuffle = false;
 // Card Generator
 const makeCard = function (suit, rank) {
   // yposition = 0 for 0, -80 for 1, -160 for 2, -240 for 3
@@ -65,6 +67,9 @@ function shuffleArray(array) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
+
+  const cutCard = { rank: null };
+  array.splice(30, 0, cutCard);
 }
 
 //evaluate player hand value
@@ -145,12 +150,12 @@ const finalScore = function () {
     document.querySelector('#playerHandValue').textContent = `${evaluateHand(
       playerHand
     )} You busted! Dealer wins!`;
-    console.log('push');
+    playerScore--;
   } else if (finalDealer > 21) {
     document.querySelector('#playerHandValue').textContent = `${evaluateHand(
       playerHand
     )} Dealer busts! You Win!`;
-    console.log('push');
+    playerScore++;
   } else if (finalDealer == finalPlayer) {
     //push next to both scores
     document.querySelector('#playerHandValue').textContent = `${evaluateHand(
@@ -163,17 +168,31 @@ const finalScore = function () {
     document.querySelector('#playerHandValue').textContent = `${evaluateHand(
       playerHand
     )} Dealer wins!`;
+    playerScore--;
   } else {
     console.log('player wins!');
     document.querySelector('#playerHandValue').textContent = `${evaluateHand(
       playerHand
     )} You win!`;
+    playerScore++;
   }
   document.querySelector('#newGame').removeAttribute('disabled');
+  document.querySelector('#wins').innerHTML = `wins: ${playerScore}`;
+  console.log(playerScore);
+};
+
+const dealCard = function () {
+  const newCard = cards.shift();
+  if (newCard.rank === null) {
+    needShuffle = true;
+    console.log('need shuffle!');
+    return cards.shift();
+  }
+  return newCard;
 };
 
 const hitDealer = function () {
-  dealerHand[dealerHand.length] = cards.shift();
+  dealerHand[dealerHand.length] = dealCard();
   let cardhtml = `<div class="playingCard" id="card---${cardCount}" style="height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${
     dealerHand[dealerHand.length - 1].xPosition
   }px ${dealerHand[0].yPosition}px"></div>`;
@@ -186,7 +205,7 @@ const hitDealer = function () {
 };
 
 const hitDealerFaceDown = function () {
-  dealerHand[1] = cards.shift();
+  dealerHand[1] = dealCard();
   downCard = cardCount;
   cardhtml = `<div class="playingCard" id="card---${cardCount}" style="height: ${cardHeight}px; width: ${cardWidth}px;"></div>`;
   document
@@ -196,7 +215,7 @@ const hitDealerFaceDown = function () {
 };
 
 const hitPlayer = function () {
-  playerHand[playerHand.length] = cards.shift();
+  playerHand[playerHand.length] = dealCard();
   cardhtml = `<div class="playingCard" id="card---${cardCount}}" style="height: ${cardHeight}px; width: ${cardWidth}px;
   background-position: ${playerHand[playerHand.length - 1].xPosition}px
   ${playerHand[playerHand.length - 1].yPosition}px"></div>`;
@@ -256,13 +275,20 @@ const discardHands = function () {
 };
 
 const newGame = function () {
+  discardHands();
+  if (needShuffle === true) {
+    console.log('need shuffle, do shuffle');
+    cards.push(...discard);
+    discard.length = 0;
+    shuffleArray(cards);
+  }
   document
     .querySelector('#newGame')
 
     .setAttribute('disabled', 'disabled');
   document.querySelector('#hit').removeAttribute('disabled');
   document.querySelector('#stay').removeAttribute('disabled');
-  discardHands();
+
   //deal the cards:
   //one card into the dealerHand, then one card into the playerHand. Do this twice.
   //first dealer card face up.
