@@ -195,7 +195,9 @@ const hitDealer = function () {
   dealerHand[dealerHand.length] = dealCard();
   let cardhtml = `<div class="playingCard" id="card---${cardCount}" style="height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${
     dealerHand[dealerHand.length - 1].xPosition
-  }px ${dealerHand[0].yPosition}px"></div>`;
+  }px ${
+    dealerHand[0].yPosition
+  }px;  animation-name: cardToss; animation-duration: 1.2s;"></div>`;
   document
     .querySelector('#dealerHand')
     .insertAdjacentHTML('beforeend', cardhtml);
@@ -203,22 +205,29 @@ const hitDealer = function () {
   document.querySelector('#dealerHandValue').textContent =
     evaluateHand(dealerHand);
 };
-
+const checkBlackjack = function () {
+  if (evaluateHand(dealerHand) == 21) {
+    stayHand();
+  }
+};
 const hitDealerFaceDown = function () {
   dealerHand[1] = dealCard();
   downCard = cardCount;
-  cardhtml = `<div class="playingCard" id="card---${cardCount}" style="height: ${cardHeight}px; width: ${cardWidth}px;"></div>`;
+  cardhtml = `<div class="playingCard" id="card---${cardCount}" style="height: ${cardHeight}px; width: ${cardWidth}px;  animation-name: cardToss; animation-duration: 1.5s;"></div>`;
   document
     .querySelector('#dealerHand')
     .insertAdjacentHTML('beforeend', cardhtml);
   cardCount++;
+  // checkBlackjack();
 };
 
 const hitPlayer = function () {
   playerHand[playerHand.length] = dealCard();
   cardhtml = `<div class="playingCard" id="card---${cardCount}}" style="height: ${cardHeight}px; width: ${cardWidth}px;
   background-position: ${playerHand[playerHand.length - 1].xPosition}px
-  ${playerHand[playerHand.length - 1].yPosition}px"></div>`;
+  ${
+    playerHand[playerHand.length - 1].yPosition
+  }px;  animation-name: cardToss; animation-duration: 1s;"></div>`;
   document
     .querySelector('#playerHand')
     .insertAdjacentHTML('beforeend', cardhtml);
@@ -232,7 +241,7 @@ const hitPlayer = function () {
     stayHand(playerHand);
   }
 };
-
+const flipDown = function () {};
 const stayHand = function () {
   document
     .querySelector(`#card---${downCard}`)

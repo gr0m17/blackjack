@@ -28,3 +28,31 @@
   height: 50px;
   background-position: 60px 0px;
 }
+@keyframes cardToss {
+  0% {
+    transform: rotate(-105deg);
+    opacity: 0;
+    left: 200px;
+    top: 0px;
+  }
+  100% {
+    opacity: 1;
+    left: 0px;
+    top: 0px;
+    /* } */
+    /* 50% {
+    transform: rotate(-45deg);
+    left: 200px;
+    top: 200px;
+  }
+  75% {
+    transform: rotate(-20deg);
+    left: 0px;
+    top: 200px;
+  }
+  100% {
+    transform: rotate(0deg);
+    left: 0px;
+    top: 0px; */
+  }
+}
