@@ -1,0 +1,30 @@
+.aceHearts,
+.smkingHearts,
+.kingHearts,
+.playingCard {
+  margin: 2px;
+  float: left;
+  width: 50px;
+  height: 80px;
+  position: relative;
+  background-image: url(card_sprites_001.gif);
+  background-size: 1300% 500%;
+  background-position: 650px 80px;
+}
+.kingHearts {
+  width: 50px;
+  height: 80px;
+  background-position: 100px 0px;
+}
+
+.aceHearts {
+  width: 50px;
+  height: 80px;
+  background-position: 650px 0px;
+}
+
+.smkingHearts {
+  width: 30px;
+  height: 50px;
+  background-position: 60px 0px;
+}
