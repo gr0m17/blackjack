@@ -70,6 +70,7 @@ function shuffleArray(array) {
 
   const cutCard = { rank: null };
   array.splice(30, 0, cutCard);
+  needShuffle = false;
 }
 
 //evaluate player hand value
@@ -186,6 +187,9 @@ const dealCard = function () {
   if (newCard.rank === null) {
     needShuffle = true;
     console.log('need shuffle!');
+    document.querySelector(
+      '#wins'
+    ).innerHTML = `Cut Card out: Shuffling after this hand!`;
     return cards.shift();
   }
   return newCard;
@@ -207,6 +211,9 @@ const hitDealer = function () {
 };
 const checkBlackjack = function () {
   if (evaluateHand(dealerHand) == 21) {
+    document.querySelector('#blackjackZone').textContent = `${evaluateHand(
+      dealerHand
+    )} Dealer Blackjack!`;
     stayHand();
   }
 };
@@ -218,7 +225,7 @@ const hitDealerFaceDown = function () {
     .querySelector('#dealerHand')
     .insertAdjacentHTML('beforeend', cardhtml);
   cardCount++;
-  // checkBlackjack();
+  checkBlackjack();
 };
 
 const hitPlayer = function () {
@@ -267,6 +274,18 @@ const stayHand = function () {
       playerHand
     )} BUST`;
     finalScore();
+  } else if (evaluateHand(playerHand) === 21 && playerHand.length === 2) {
+    document.querySelector('#blackjackZone').textContent = `${evaluateHand(
+      dealerHand
+    )} Player Blackjack!`;
+    document
+      .querySelector(`#card---${downCard}`)
+
+      .setAttribute(
+        'style',
+        `height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${dealerHand[1].xPosition}px ${dealerHand[1].yPosition}px`
+      );
+    finalScore();
   } else {
     dealerTurn();
   }
@@ -281,6 +300,7 @@ const discardHands = function () {
   dealerHand.length = 0;
   document.querySelector('#playerHand').innerHTML = '';
   document.querySelector('#dealerHand').innerHTML = '';
+  document.querySelector('#blackjackZone').innerHTML = '';
 };
 
 const newGame = function () {
