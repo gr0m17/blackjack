@@ -4,44 +4,62 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Blackjack v0.1</title>
+    <title>Blackjack v1.1</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body style="background: radial-gradient(#35ab4d, #41c232)">
-    <h1>Blackjack v0.1</h1>
+    <h1>Blackjack v1.1</h1>
 
-    <!-- p id="card--00">Card goes here</p -->
-    <!-- <div class="aceHearts"></div>
-    <div class="kingHearts"></div> -->
-    Dealer Hand:
-    <div id="dealerHandValue">_</div>
-    <div
-      class="float-container"
-      id="dealerHand"
-      style="height: 120px; width: 550px"
-    ></div>
-    <div id="blackjackZone">---</div>
-    Player Hand:
-    <div id="playerHandValue">0</div>
-    <div
-      class="float-container"
-      id="playerHand"
-      style="height: 120px; width: 550px"
-    ></div>
-    <div id="buttons">
-      <input type="button" id="hit" onclick="hitPlayer()" value="Hit!" /><input
-        type="button"
-        id="stay"
-        onclick="stayHand()"
-        value="Stay!"
-      /><input
-        type="button"
-        id="newGame"
-        onclick="newGame()"
-        value="Deal Next Hand"
-        disabled="disabled"
-      />
-      <div id="wins">wins go here</div>
+    <div id="gameArea">
+      <div id="dealer">
+        Dealer Hand:
+        <div id="dealerHandValue">_</div>
+        <div
+          class="float-container"
+          id="dealerHand"
+          style="height: 120px; width: 550px"
+        ></div>
+      </div>
+      <div id="messageCenter">---</div>
+      <div id="cutCardAlert">---</div>
+      <div id="blackjackZone">---</div>
+      <div id="payoutInformation"></div>
+
+      <div id="player">
+        Player Hand:
+        <div id="playerHandValue">0</div>
+        <div
+          class="float-container"
+          id="playerHand"
+          style="height: 120px; width: 550px"
+        ></div>
+        <div id="buttons">
+          <input
+            type="button"
+            id="hit"
+            onclick="hitPlayer()"
+            value="Hit!"
+          /><input type="button" id="stay" onclick="stayHand()" value="Stay!" />
+          <input
+            type="button"
+            id="newGame"
+            onclick="newGame()"
+            value=""
+            disabled="disabled"
+          />
+        </div>
+        <br />
+        <input
+          type="button"
+          id="placeBet"
+          onclick="placeBet()"
+          value="Place a bet!"
+        />
+        <input type="number" id="wagerAmount" placeholder="$$$" step="5" />
+        <div id="wins">wins go here</div>
+
+        <div id="bankroll">500</div>
+      </div>
     </div>
 
     <script src="script.js"></script>

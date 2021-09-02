@@ -30,6 +30,13 @@ let aceCount;
 let downCard;
 let playerScore = 0;
 let needShuffle = false;
+let bankroll = 500;
+let minBet = 5;
+let maxBet = 500;
+let betPlaced = false;
+let betAmount = 5;
+let userWager;
+let blackjackWin = false;
 // Card Generator
 const makeCard = function (suit, rank) {
   // yposition = 0 for 0, -80 for 1, -160 for 2, -240 for 3
@@ -71,6 +78,7 @@ function shuffleArray(array) {
   const cutCard = { rank: null };
   array.splice(30, 0, cutCard);
   needShuffle = false;
+  document.querySelector('#cutCardAlert').innerHTML = `Shuffling Complete!`;
 }
 
 //evaluate player hand value
@@ -148,34 +156,33 @@ const finalScore = function () {
   let finalPlayer = evaluateHand(playerHand);
   //push conditions
   if (finalPlayer > 21) {
-    document.querySelector('#playerHandValue').textContent = `${evaluateHand(
-      playerHand
-    )} You busted! Dealer wins!`;
+    document.querySelector(
+      '#messageCenter'
+    ).textContent = `You busted! Dealer wins!`;
     playerScore--;
+    releaseBet();
   } else if (finalDealer > 21) {
-    document.querySelector('#playerHandValue').textContent = `${evaluateHand(
-      playerHand
-    )} Dealer busts! You Win!`;
+    document.querySelector(
+      '#messageCenter'
+    ).textContent = ` Dealer busts! You Win!`;
     playerScore++;
+    payBet();
   } else if (finalDealer == finalPlayer) {
     //push next to both scores
-    document.querySelector('#playerHandValue').textContent = `${evaluateHand(
-      playerHand
-    )} You Pushed!`;
+    document.querySelector('#messageCenter').textContent = ` You Pushed!`;
     console.log('push');
+    payBet(betAmount, false, true);
   } else if (finalDealer > finalPlayer) {
     //dealer wins
     console.log('dealer wins!');
-    document.querySelector('#playerHandValue').textContent = `${evaluateHand(
-      playerHand
-    )} Dealer wins!`;
+    document.querySelector('#messageCenter').textContent = ` Dealer wins!`;
     playerScore--;
+    releaseBet();
   } else {
     console.log('player wins!');
-    document.querySelector('#playerHandValue').textContent = `${evaluateHand(
-      playerHand
-    )} You win!`;
+    document.querySelector('#messageCenter').textContent = ` You win!`;
     playerScore++;
+    payBet();
   }
   document.querySelector('#newGame').removeAttribute('disabled');
   document.querySelector('#wins').innerHTML = `wins: ${playerScore}`;
@@ -188,7 +195,7 @@ const dealCard = function () {
     needShuffle = true;
     console.log('need shuffle!');
     document.querySelector(
-      '#wins'
+      '#cutCardAlert'
     ).innerHTML = `Cut Card out: Shuffling after this hand!`;
     return cards.shift();
   }
@@ -211,9 +218,7 @@ const hitDealer = function () {
 };
 const checkBlackjack = function () {
   if (evaluateHand(dealerHand) == 21) {
-    document.querySelector('#blackjackZone').textContent = `${evaluateHand(
-      dealerHand
-    )} Dealer Blackjack!`;
+    document.querySelector('#blackjackZone').textContent = 'Dealer Blackjack!';
     stayHand();
   }
 };
@@ -275,9 +280,8 @@ const stayHand = function () {
     )} BUST`;
     finalScore();
   } else if (evaluateHand(playerHand) === 21 && playerHand.length === 2) {
-    document.querySelector('#blackjackZone').textContent = `${evaluateHand(
-      dealerHand
-    )} Player Blackjack!`;
+    blackjackWin = true;
+    document.querySelector('#blackjackZone').textContent = 'Player Blackjack!';
     document
       .querySelector(`#card---${downCard}`)
 
@@ -301,6 +305,8 @@ const discardHands = function () {
   document.querySelector('#playerHand').innerHTML = '';
   document.querySelector('#dealerHand').innerHTML = '';
   document.querySelector('#blackjackZone').innerHTML = '';
+  document.querySelector('#messageCenter').innerHTML = '';
+  document.querySelector('#cutCardAlert').innerHTML = '';
 };
 
 const newGame = function () {
@@ -317,7 +323,10 @@ const newGame = function () {
     .setAttribute('disabled', 'disabled');
   document.querySelector('#hit').removeAttribute('disabled');
   document.querySelector('#stay').removeAttribute('disabled');
+  // document
+  //   .querySelector('#placeBet')
 
+  //   .setAttribute('disabled', 'disabled');
   //deal the cards:
   //one card into the dealerHand, then one card into the playerHand. Do this twice.
   //first dealer card face up.
@@ -338,11 +347,86 @@ const newGame = function () {
 
   //evaluate the hands.
 };
+const placeBet = function (bet = minBet) {
+  userWager = document.getElementById('wagerAmount').value;
+  if (userWager) {
+    if (userWager < 0) {
+      userWager = userWager * -1;
+      document.getElementById('wagerAmount').value = userWager;
+    }
+    if (userWager > maxBet) {
+      userWager = maxBet;
+      document.getElementById('wagerAmount').value = userWager;
+    }
+    if (userWager < minBet) {
+      userWager = minBet;
+      document.getElementById('wagerAmount').value = userWager;
+    }
 
+    bet = Number(userWager);
+  }
+  if (bankroll < bet) {
+    alert(
+      "you don't have enough to bet " + bet + ', you only have ' + bankroll
+    );
+    document.getElementById('wagerAmount').value = bankroll;
+  } else if (bankroll >= bet && bet <= maxBet && betPlaced == false) {
+    betPlaced = true;
+    bankroll -= bet;
+    betAmount = bet;
+    document.querySelector(
+      '#bankroll'
+    ).innerHTML = `bankroll: ${bankroll} Current Bet:${bet}`;
+    newGame();
+  }
+};
+const payBet = function (
+  bet = betAmount,
+  isBlackjack = blackjackWin,
+  pushBet = false
+) {
+  if (isBlackjack) {
+    bet = bet + bet * 0.5;
+    document.querySelector(
+      '#payoutInformation'
+    ).textContent = ` Blackjack pays 3:2 payout amount: ${bet}`;
+    bankroll += bet;
+    blackjackWin = false;
+    releaseBet();
+  }
+  bankroll += bet;
+  if (!pushBet) {
+    bankroll += bet;
+  }
+  releaseBet();
+  document.querySelector(
+    '#payoutInformation'
+  ).textContent = `payout amount: ${bet}`;
+};
+const releaseBet = function () {
+  betAmount = minBet;
+  betPlaced = false;
+  document.querySelector('#bankroll').innerHTML = `bankroll: ${bankroll}`;
+};
+const setLimits = function () {
+  document
+    .querySelector('#wagerAmount')
+
+    .setAttribute('min', minBet);
+  document
+    .querySelector('#wagerAmount')
+
+    .setAttribute('max', maxBet);
+  document
+    .querySelector('#wagerAmount')
+
+    .setAttribute('placeholder', minBet);
+};
 //initialization
 buildDeck();
+setLimits();
 shuffleArray(cards);
-newGame();
+// newGame();
 // //insert a cut card to trigger shuffle
 // function insertAt(array, index, ...elementsArray) {
 //   array.splice(index, 0, ...elements);
