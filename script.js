@@ -307,6 +307,7 @@ const discardHands = function () {
   document.querySelector('#blackjackZone').innerHTML = '';
   document.querySelector('#messageCenter').innerHTML = '';
   document.querySelector('#cutCardAlert').innerHTML = '';
+  document.querySelector('#payoutInformation').innerHTML = '';
 };
 
 const newGame = function () {
@@ -348,6 +349,7 @@ const newGame = function () {
   //evaluate the hands.
 };
 const placeBet = function (bet = minBet) {
+  document.querySelector('#placeBet').setAttribute('disabled', 'disabled');
   userWager = document.getElementById('wagerAmount').value;
   if (userWager) {
     if (userWager < 0) {
@@ -407,6 +409,7 @@ const releaseBet = function () {
   betAmount = minBet;
   betPlaced = false;
   document.querySelector('#bankroll').innerHTML = `bankroll: ${bankroll}`;
+  document.querySelector('#placeBet').removeAttribute('disabled');
 };
 const setLimits = function () {
   document
@@ -434,7 +437,8 @@ shuffleArray(cards);
 // insertAt(cards, 32, {cutcard})
 
 //print card stack to console [for dev]
-for (let i = 0; i < cards.length; i++) {
-  console.log(cardName(cards[i]));
-}
-console.log(cards);
+
+// for (let i = 0; i < cards.length; i++) {
+//   console.log(cardName(cards[i]));
+// }
+// console.log(cards);

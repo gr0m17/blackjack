@@ -23,7 +23,7 @@
       <div id="messageCenter">---</div>
       <div id="cutCardAlert">---</div>
       <div id="blackjackZone">---</div>
-      <div id="payoutInformation"></div>
+      <div id="payoutInformation">---</div>
 
       <div id="player">
         Player Hand:
@@ -39,7 +39,14 @@
             id="hit"
             onclick="hitPlayer()"
             value="Hit!"
-          /><input type="button" id="stay" onclick="stayHand()" value="Stay!" />
+            disabled="disabled"
+          /><input
+            type="button"
+            id="stay"
+            onclick="stayHand()"
+            value="Stay!"
+            disabled="disabled"
+          />
           <input
             type="button"
             id="newGame"
