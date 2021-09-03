@@ -39,3 +39,7 @@
     top: 0px;
   }
 }
+#shuffleGIF {
+  position: absolute;
+  top: 20%;
+}

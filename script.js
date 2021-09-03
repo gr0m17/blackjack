@@ -69,7 +69,14 @@ const buildDeck = function () {
     }
   }
 };
-
+const shuffleAnimation = function () {
+  document.getElementById('shuffleGIF').style.display = 'inline';
+  document.querySelector('#cutCardAlert').innerHTML = '';
+  setTimeout(function () {
+    document.getElementById('shuffleGIF').style.display = 'none';
+    document.querySelector('#cutCardAlert').innerHTML = `Shuffling Complete!`;
+  }, 2000);
+};
 //sweet shuffling implemetation:
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -381,10 +388,21 @@ const placeBet = function (bet = minBet) {
       '#bankroll'
     ).innerHTML = `bankroll: ${bankroll} Current Bet:${bet}`;
     document.querySelector('#placeBet').setAttribute('disabled', 'disabled');
+  }
+  if (needShuffle == true) {
+    discardHands();
+    shuffleAnimation();
+    setTimeout(function () {
+      if (bankroll >= bet) {
+        document.querySelector('#doubleDown').removeAttribute('disabled');
+      }
+      newGame();
+    }, 2000);
+  } else {
     if (bankroll >= bet) {
       document.querySelector('#doubleDown').removeAttribute('disabled');
+      newGame();
     }
-    newGame();
   }
 };
 
