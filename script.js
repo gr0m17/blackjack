@@ -253,7 +253,10 @@ const hitPlayer = function () {
     .querySelector('#playerHand')
     .insertAdjacentHTML('beforeend', cardhtml);
   cardCount++;
-
+  //disable doubleDown if more than 2 cards
+  if (playerHand.length > 2) {
+    document.querySelector('#doubleDown').setAttribute('disabled', 'disabled');
+  }
   //update hand value on the screen
   //if hand value == 21, automatically stay.
   document.querySelector('#playerHandValue').textContent =
