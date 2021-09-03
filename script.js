@@ -347,12 +347,19 @@ const newGame = function () {
   // cardCount++;
 
   //hitting is the same as dealing.
-  hitPlayer();
+  setTimeout(function () {
+    hitPlayer();
+  }, 100);
 
   //dealer card 2 face down.
-  hitDealerFaceDown();
+  setTimeout(function () {
+    hitDealerFaceDown();
+  }, 200);
+
   //hitting is the same as dealing.
-  hitPlayer();
+  setTimeout(function () {
+    hitPlayer();
+  }, 300);
   //make an array of card elements currently in the document.
 
   //evaluate the hands.
@@ -388,19 +395,19 @@ const placeBet = function (bet = minBet) {
       '#bankroll'
     ).innerHTML = `bankroll: ${bankroll} Current Bet:${bet}`;
     document.querySelector('#placeBet').setAttribute('disabled', 'disabled');
-  }
-  if (needShuffle == true) {
-    discardHands();
-    shuffleAnimation();
-    setTimeout(function () {
+    if (needShuffle == true) {
+      discardHands();
+      shuffleAnimation();
+      setTimeout(function () {
+        if (bankroll >= bet) {
+          document.querySelector('#doubleDown').removeAttribute('disabled');
+        }
+        newGame();
+      }, 2000);
+    } else {
       if (bankroll >= bet) {
         document.querySelector('#doubleDown').removeAttribute('disabled');
       }
-      newGame();
-    }, 2000);
-  } else {
-    if (bankroll >= bet) {
-      document.querySelector('#doubleDown').removeAttribute('disabled');
       newGame();
     }
   }
