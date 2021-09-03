@@ -37,6 +37,8 @@ let betPlaced = false;
 let betAmount = 5;
 let userWager;
 let blackjackWin = false;
+let doubleBet = false;
+let betString = '';
 // Card Generator
 const makeCard = function (suit, rank) {
   // yposition = 0 for 0, -80 for 1, -160 for 2, -240 for 3
@@ -379,9 +381,22 @@ const placeBet = function (bet = minBet) {
       '#bankroll'
     ).innerHTML = `bankroll: ${bankroll} Current Bet:${bet}`;
     document.querySelector('#placeBet').setAttribute('disabled', 'disabled');
+    if (bankroll >= bet) {
+      document.querySelector('#doubleDown').removeAttribute('disabled');
+    }
     newGame();
   }
 };
+
+const doubleDown = function () {
+  doubleBet = true;
+  bankroll -= betAmount;
+  hitPlayer();
+  if (evaluateHand(playerHand) < 21) {
+    stayHand();
+  }
+};
+
 const payBet = function (
   bet = betAmount,
   isBlackjack = blackjackWin,
@@ -400,16 +415,25 @@ const payBet = function (
   if (!pushBet) {
     bankroll += bet;
   }
+  if (doubleBet) {
+    bankroll += bet;
+    betString = `${bet} + ${bet} (double down)`;
+  } else {
+    betString = `${bet}`;
+  }
+
   releaseBet();
   document.querySelector(
     '#payoutInformation'
-  ).textContent = `payout amount: ${bet}`;
+  ).textContent = `payout amount: ${betString}`;
 };
 const releaseBet = function () {
   betAmount = minBet;
+  doubleBet = false;
   betPlaced = false;
   document.querySelector('#bankroll').innerHTML = `bankroll: ${bankroll}`;
   document.querySelector('#placeBet').removeAttribute('disabled');
+  document.querySelector('#doubleDown').setAttribute('disabled', 'disabled');
 };
 const setLimits = function () {
   document
