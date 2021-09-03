@@ -349,7 +349,6 @@ const newGame = function () {
   //evaluate the hands.
 };
 const placeBet = function (bet = minBet) {
-  document.querySelector('#placeBet').setAttribute('disabled', 'disabled');
   userWager = document.getElementById('wagerAmount').value;
   if (userWager) {
     if (userWager < 0) {
@@ -379,6 +378,7 @@ const placeBet = function (bet = minBet) {
     document.querySelector(
       '#bankroll'
     ).innerHTML = `bankroll: ${bankroll} Current Bet:${bet}`;
+    document.querySelector('#placeBet').setAttribute('disabled', 'disabled');
     newGame();
   }
 };
