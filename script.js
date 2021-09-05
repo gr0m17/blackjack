@@ -433,6 +433,7 @@ const discardHands = function () {
   document.querySelector('#messageCenter').innerHTML = '';
   document.querySelector('#cutCardAlert').innerHTML = '';
   document.querySelector('#payoutInformation').innerHTML = '';
+  document.querySelector('#splitInformation').innerHTML = '';
 };
 
 const newGame = function () {
@@ -624,7 +625,7 @@ const paySplit = function (bet = betAmount) {
   }
   document.querySelector(
     '#splitInformation'
-  ).textContent = `payout amount: ${betString}`;
+  ).textContent = `split payout amount: ${betString}`;
 };
 const releaseBet = function () {
   betAmount = minBet;
