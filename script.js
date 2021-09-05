@@ -5,6 +5,7 @@ const cardWidth = 50;
 const cardHeight = 80;
 const dealerHand = [];
 const playerHand = [];
+const splitHand = [];
 const discard = [];
 const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 const ranks = [
@@ -38,7 +39,10 @@ let betAmount = 5;
 let userWager;
 let blackjackWin = false;
 let doubleBet = false;
+let splitBet = false;
+let splitDoubleBet = false;
 let betString = '';
+let staySplit = true;
 // Card Generator
 const makeCard = function (suit, rank) {
   // yposition = 0 for 0, -80 for 1, -160 for 2, -240 for 3
@@ -163,7 +167,29 @@ const dealerTurn = function () {
 const finalScore = function () {
   let finalDealer = evaluateHand(dealerHand);
   let finalPlayer = evaluateHand(playerHand);
-  //push conditions
+  if (splitBet) {
+    let finalSplit = evaluateHand(splitHand);
+    if (finalDealer > 21) {
+      finalDealer = 0;
+    } else if (finalSplit > 21) {
+      finalSplit = 0;
+    }
+    if (finalDealer > finalSplit) {
+      splitBet = false;
+      if (splitDoubleBet) {
+        splitDoubleBet = false;
+      }
+    } else if (finalSplit == finalDealer) {
+      bankroll += betAmount;
+      splitDoubleBet = false;
+      if (splitDoubleBet) {
+        bankroll += betAmount;
+        splitBet = false;
+      }
+    }
+    paySplit();
+  }
+
   if (finalPlayer > 21) {
     document.querySelector(
       '#messageCenter'
@@ -241,59 +267,113 @@ const hitDealerFaceDown = function () {
   cardCount++;
   checkBlackjack();
 };
+const redrawHands = function (handArray, displayZone) {
+  console.log(playerHand);
+  console.log(handArray);
+  console.log(displayZone);
+  //document.querySelector('#playerHandValue').textContent =
+  console.log(evaluateHand(handArray));
+  document.querySelector(`#${displayZone}`).innerHTML = '';
+  for (const card of handArray) {
+    cardhtml = `<div class="playingCard" id="card---${cardCount}}" style="height: ${cardHeight}px; width: ${cardWidth}px;
+  background-position: ${card.xPosition}px
+  ${card.yPosition}px;  animation-name: cardToss; animation-duration: 0s;"></div>`;
+    document
+      .querySelector(`#${displayZone}`)
+      .insertAdjacentHTML('beforeend', cardhtml);
+    cardCount++;
+    document.querySelector(`#${displayZone}Value`).textContent =
+      evaluateHand(handArray);
+    //redraw cards in hand in the player hand box
+  }
+};
+const splitCards = function () {
+  console.log(bankroll);
+  console.log(betAmount);
+  bankroll -= betAmount;
+  console.log(bankroll);
+  document.querySelector(
+    '#bankroll'
+  ).innerHTML = `bankroll: ${bankroll} Current Bet:${betAmount} + Split Bet:${betAmount}`;
+  splitBet = true;
+  document.querySelector('#split').setAttribute('disabled', 'disabled');
+  splitHand[0] = playerHand.pop();
+  console.log(splitHand);
+  console.log(playerHand);
+  redrawHands(playerHand, 'playerHand');
+  redrawHands(splitHand, 'splitHand');
+  staySplit = false;
+  hitPlayer();
+};
 
 const hitPlayer = function () {
-  playerHand[playerHand.length] = dealCard();
-  cardhtml = `<div class="playingCard" id="card---${cardCount}}" style="height: ${cardHeight}px; width: ${cardWidth}px;
+  if (!staySplit) {
+    //split behavior
+    splitHand[splitHand.length] = dealCard();
+    cardhtml = `<div class="playingCard" id="card---${cardCount}}" style="height: ${cardHeight}px; width: ${cardWidth}px;
+    background-position: ${splitHand[splitHand.length - 1].xPosition}px
+    ${
+      splitHand[splitHand.length - 1].yPosition
+    }px;  animation-name: cardToss; animation-duration: 1s;"></div>`;
+    document
+      .querySelector('#splitHand')
+      .insertAdjacentHTML('beforeend', cardhtml);
+
+    cardCount++;
+    if (splitHand.length > 2) {
+      document
+        .querySelector('#doubleDown')
+        .setAttribute('disabled', 'disabled');
+    }
+    //update hand value on the screen
+    //if hand value == 21, automatically stay.
+    document.querySelector('#splitHandValue').textContent =
+      evaluateHand(splitHand);
+    if (evaluateHand(splitHand) >= 21) {
+      stayHand(splitHand);
+    }
+    //
+  } else {
+    playerHand[playerHand.length] = dealCard();
+
+    cardhtml = `<div class="playingCard" id="card---${cardCount}}" style="height: ${cardHeight}px; width: ${cardWidth}px;
   background-position: ${playerHand[playerHand.length - 1].xPosition}px
   ${
     playerHand[playerHand.length - 1].yPosition
   }px;  animation-name: cardToss; animation-duration: 1s;"></div>`;
-  document
-    .querySelector('#playerHand')
-    .insertAdjacentHTML('beforeend', cardhtml);
-  cardCount++;
-  //disable doubleDown if more than 2 cards
-  if (playerHand.length > 2) {
-    document.querySelector('#doubleDown').setAttribute('disabled', 'disabled');
-  }
-  //update hand value on the screen
-  //if hand value == 21, automatically stay.
-  document.querySelector('#playerHandValue').textContent =
-    evaluateHand(playerHand);
-  if (evaluateHand(playerHand) >= 21) {
-    stayHand(playerHand);
+    document
+      .querySelector('#playerHand')
+      .insertAdjacentHTML('beforeend', cardhtml);
+
+    cardCount++;
+    //disable doubleDown if more than 2 cards
+    if (playerHand.length > 2) {
+      document
+        .querySelector('#doubleDown')
+        .setAttribute('disabled', 'disabled');
+    }
+    //update hand value on the screen
+    //if hand value == 21, automatically stay.
+    document.querySelector('#playerHandValue').textContent =
+      evaluateHand(playerHand);
+    if (evaluateHand(playerHand) >= 21) {
+      stayHand(playerHand);
+    }
   }
 };
 const flipDown = function () {};
 const stayHand = function () {
-  document
-    .querySelector(`#card---${downCard}`)
+  if (!staySplit) {
+    evaluateHand(splitHand);
+    staySplit = true;
+    hitPlayer();
+    if (bankroll >= betAmount) {
+      document.querySelector('#doubleDown').removeAttribute('disabled');
+    }
+  } else {
+    //evaluate the total of the split hand and if it's bust, remove it from the table.
+    //handle releasing split bet.
 
-    .setAttribute(
-      'style',
-      `height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${dealerHand[1].xPosition}px ${dealerHand[1].yPosition}px`
-    );
-  document.querySelector('#dealerHandValue').textContent =
-    evaluateHand(dealerHand);
-  //disable the hit button
-  document
-    .querySelector('#hit')
-
-    .setAttribute('disabled', 'disabled');
-  //disable the stay button
-  document
-    .querySelector('#stay')
-
-    .setAttribute('disabled', 'disabled');
-  if (evaluateHand(playerHand) > 21) {
-    document.querySelector('#playerHandValue').textContent = `${evaluateHand(
-      playerHand
-    )} BUST`;
-    finalScore();
-  } else if (evaluateHand(playerHand) === 21 && playerHand.length === 2) {
-    blackjackWin = true;
-    document.querySelector('#blackjackZone').textContent = 'Player Blackjack!';
     document
       .querySelector(`#card---${downCard}`)
 
@@ -301,9 +381,38 @@ const stayHand = function () {
         'style',
         `height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${dealerHand[1].xPosition}px ${dealerHand[1].yPosition}px`
       );
-    finalScore();
-  } else {
-    dealerTurn();
+    document.querySelector('#dealerHandValue').textContent =
+      evaluateHand(dealerHand);
+    //disable the hit button
+    document
+      .querySelector('#hit')
+
+      .setAttribute('disabled', 'disabled');
+    //disable the stay button
+    document
+      .querySelector('#stay')
+
+      .setAttribute('disabled', 'disabled');
+    if (evaluateHand(playerHand) > 21) {
+      document.querySelector('#playerHandValue').textContent = `${evaluateHand(
+        playerHand
+      )} BUST`;
+      finalScore();
+    } else if (evaluateHand(playerHand) === 21 && playerHand.length === 2) {
+      blackjackWin = true;
+      document.querySelector('#blackjackZone').textContent =
+        'Player Blackjack!';
+      document
+        .querySelector(`#card---${downCard}`)
+
+        .setAttribute(
+          'style',
+          `height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${dealerHand[1].xPosition}px ${dealerHand[1].yPosition}px`
+        );
+      finalScore();
+    } else {
+      dealerTurn();
+    }
   }
 };
 
@@ -311,11 +420,15 @@ const stayHand = function () {
 const discardHands = function () {
   discard.push(...playerHand);
   discard.push(...dealerHand);
+  discard.push(...splitHand);
+
   console.log(discard);
   playerHand.length = 0;
   dealerHand.length = 0;
+  splitHand.length = 0;
   document.querySelector('#playerHand').innerHTML = '';
   document.querySelector('#dealerHand').innerHTML = '';
+  document.querySelector('#splitHand').innerHTML = '';
   document.querySelector('#blackjackZone').innerHTML = '';
   document.querySelector('#messageCenter').innerHTML = '';
   document.querySelector('#cutCardAlert').innerHTML = '';
@@ -362,10 +475,19 @@ const newGame = function () {
   //hitting is the same as dealing.
   setTimeout(function () {
     hitPlayer();
+    checkSplit();
   }, 300);
   //make an array of card elements currently in the document.
 
   //evaluate the hands.
+};
+const checkSplit = function () {
+  console.log(playerHand);
+  if (playerHand[0].rank == playerHand[1].rank && playerHand.length == 2) {
+    document.querySelector('#split').removeAttribute('disabled');
+  } else {
+    document.querySelector('#split').setAttribute('disabled', 'disabled');
+  }
 };
 const placeBet = function (bet = minBet) {
   userWager = document.getElementById('wagerAmount').value;
@@ -417,11 +539,26 @@ const placeBet = function (bet = minBet) {
 };
 
 const doubleDown = function () {
-  doubleBet = true;
-  bankroll -= betAmount;
-  hitPlayer();
-  if (evaluateHand(playerHand) < 21) {
-    stayHand();
+  if (!staySplit) {
+    splitDoubleBet = true;
+    bankroll -= betAmount;
+    document.querySelector(
+      '#bankroll'
+    ).innerHTML = `bankroll: ${bankroll} Current Bet:${betAmount} + Split Bet:${betAmount} + Split Double Down ${betAmount}`;
+    hitPlayer();
+    if (evaluateHand(splitHand) < 21) {
+      stayHand();
+    }
+  } else {
+    doubleBet = true;
+    bankroll -= betAmount;
+    document
+      .querySelector('#bankroll')
+      .insertAdjacentHTML('beforeend', ` + Split Double Down ${betAmount}`);
+    hitPlayer();
+    if (evaluateHand(playerHand) < 21) {
+      stayHand();
+    }
   }
 };
 
@@ -431,34 +568,63 @@ const payBet = function (
   pushBet = false
 ) {
   if (isBlackjack) {
-    bet = bet + bet * 0.5;
+    bet = bet + bet + bet * 0.5;
     document.querySelector(
       '#payoutInformation'
     ).textContent = ` Blackjack pays 3:2 payout amount: ${bet}`;
     bankroll += bet;
     blackjackWin = false;
     releaseBet();
-  }
-  bankroll += bet;
-  if (!pushBet) {
-    bankroll += bet;
-  }
-  if (doubleBet) {
-    bankroll += bet;
-    betString = `${bet} + ${bet} (double down)`;
   } else {
-    betString = `${bet}`;
-  }
+    bankroll += bet;
+    if (!pushBet) {
+      bankroll += bet;
+    }
+    if (doubleBet) {
+      bankroll += bet + bet;
+      betString = `${bet} + ${bet} (double down)`;
+    } else {
+      betString = `${bet}`;
+    }
+    // if (splitBet) {
+    //   bankroll += bet + bet;
+    //   betString += `+ ${bet} Split win!`;
+    //   console.log('pay split bet');
+    // }
+    // if (splitDoubleBet) {
+    //   bankroll += bet = bet;
+    //   console.log('pay split double down');
+    //   betString += `+ ${bet} Split Double Down win!!`;
+    // }
 
-  releaseBet();
+    releaseBet();
+    document.querySelector(
+      '#payoutInformation'
+    ).textContent = `payout amount: ${betString}`;
+  }
+};
+const paySplit = function (bet = betAmount) {
+  if (splitBet) {
+    bankroll += bet + bet;
+    betString += `+ ${bet} Split win!`;
+    console.log('pay split bet');
+  }
+  if (splitDoubleBet) {
+    bankroll += bet = bet;
+    console.log('pay split double down');
+    betString += `+ ${bet} Split Double Down win!!`;
+  }
   document.querySelector(
-    '#payoutInformation'
+    '#splitInformation'
   ).textContent = `payout amount: ${betString}`;
 };
 const releaseBet = function () {
   betAmount = minBet;
   doubleBet = false;
   betPlaced = false;
+  splitDoubleBet = false;
+  splitBet = false;
+  blackjackWin = false;
   document.querySelector('#bankroll').innerHTML = `bankroll: ${bankroll}`;
   document.querySelector('#placeBet').removeAttribute('disabled');
   document.querySelector('#doubleDown').setAttribute('disabled', 'disabled');

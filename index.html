@@ -27,6 +27,7 @@
       <div id="cutCardAlert">---</div>
       <div id="blackjackZone">---</div>
       <div id="payoutInformation">---</div>
+      <div id="splitInformation">---</div>
       <div id="player">
         Player Hand:
         <div id="playerHandValue">0</div>
@@ -35,6 +36,15 @@
           id="playerHand"
           style="height: 120px; width: 550px"
         ></div>
+
+        Split Hand:
+        <div id="splitHandValue">0</div>
+        <div
+          class="float-conta`iner"
+          id="splitHand"
+          style="height: 120px; width: 550px"
+        ></div>
+
         <div id="buttons">
           <input
             type="button"
@@ -47,6 +57,12 @@
             id="stay"
             onclick="stayHand()"
             value="Stay!"
+            disabled="disabled"
+          /><input
+            type="button"
+            id="split"
+            onclick="splitCards()"
+            value="Split!"
             disabled="disabled"
           />
           <input
