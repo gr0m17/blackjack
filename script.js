@@ -569,11 +569,12 @@ const payBet = function (
   pushBet = false
 ) {
   if (isBlackjack) {
-    bet = bet + bet + bet * 0.5;
+    bet = +bet + bet * 0.5;
     document.querySelector(
       '#payoutInformation'
     ).textContent = ` Blackjack pays 3:2 payout amount: ${bet}`;
-    bankroll += bet;
+    //add back wager to payout
+    bankroll += bet + betAmount;
     blackjackWin = false;
     releaseBet();
   } else {
