@@ -577,11 +577,19 @@ const payBet = function (
     releaseBet();
   } else {
     bankroll += bet;
+    console.log('paying back bet:', bankroll);
     if (!pushBet) {
       bankroll += bet;
+      console.log('paying win:', bankroll);
     }
     if (doubleBet) {
-      bankroll += bet + bet;
+      if (!pushBet) {
+        bankroll += bet;
+        console.log('paying double win:', bankroll);
+      }
+      console.log('paying back double down bet:', bankroll);
+
+      bankroll += bet;
       betString = `${bet} + ${bet} (double down)`;
     } else {
       betString = `${bet}`;
@@ -607,11 +615,11 @@ const paySplit = function (bet = betAmount) {
   if (splitBet) {
     bankroll += bet + bet;
     betString += `+ ${bet} Split win!`;
-    console.log('pay split bet');
+    console.log('pay split bet', bankroll);
   }
   if (splitDoubleBet) {
     bankroll += bet = bet;
-    console.log('pay split double down');
+    console.log('pay split double down', bankroll);
     betString += `+ ${bet} Split Double Down win!!`;
   }
   document.querySelector(
