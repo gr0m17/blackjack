@@ -572,7 +572,7 @@ const payBet = function (
     bet = +bet + bet * 0.5;
     document.querySelector(
       '#payoutInformation'
-    ).textContent = ` Blackjack pays 3:2 payout amount: ${wagerAmount * 1.5}`;
+    ).textContent = ` Blackjack pays 3:2 payout amount: ${betAmount * 1.5}`;
     //add back wager to payout
     bankroll += bet + betAmount;
     blackjackWin = false;
