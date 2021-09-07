@@ -75,9 +75,11 @@ const buildDeck = function () {
 };
 const shuffleAnimation = function () {
   document.getElementById('shuffleGIF').style.display = 'inline';
+  document.querySelector('.shuffleWindow').style.display = 'inline';
   document.querySelector('#cutCardAlert').innerHTML = '';
   setTimeout(function () {
     document.getElementById('shuffleGIF').style.display = 'none';
+    document.querySelector('.shuffleWindow').style.display = 'none';
     document.querySelector('#cutCardAlert').innerHTML = `Shuffling Complete!`;
   }, 2000);
 };
@@ -242,7 +244,7 @@ const hitDealer = function () {
   let cardhtml = `<div class="playingCard" id="card---${cardCount}" style="height: ${cardHeight}px; width: ${cardWidth}px; background-position: ${
     dealerHand[dealerHand.length - 1].xPosition
   }px ${
-    dealerHand[0].yPosition
+    dealerHand[dealerHand.length - 1].yPosition
   }px;  animation-name: cardToss; animation-duration: 1.2s;"></div>`;
   document
     .querySelector('#dealerHand')
@@ -292,6 +294,7 @@ const splitCards = function () {
   console.log(betAmount);
   bankroll -= betAmount;
   console.log(bankroll);
+  document.querySelector('#splitDiv').style.visibility = 'visible';
   document.querySelector(
     '#bankroll'
   ).innerHTML = `bankroll: ${bankroll} Current Bet:${betAmount} + Split Bet:${betAmount}`;
@@ -329,6 +332,20 @@ const hitPlayer = function () {
     //if hand value == 21, automatically stay.
     document.querySelector('#splitHandValue').textContent =
       evaluateHand(splitHand);
+    let circleColor = 'green';
+
+    if (evaluateHand(splitHand) > 21) {
+      circleColor = 'red';
+    } else if (evaluateHand(splitHand) > 17) {
+      circleColor = 'orange';
+    } else if (evaluateHand(splitHand) > 11) {
+      circleColor = 'yellow';
+    }
+
+    console.log(circleColor);
+    document.querySelector('#splitHandValue').style.backgroundColor =
+      circleColor;
+
     if (evaluateHand(splitHand) >= 21) {
       stayHand(splitHand);
     }
@@ -344,6 +361,20 @@ const hitPlayer = function () {
     document
       .querySelector('#playerHand')
       .insertAdjacentHTML('beforeend', cardhtml);
+
+    let circleColor = 'green';
+
+    if (evaluateHand(playerHand) > 21) {
+      circleColor = 'red';
+    } else if (evaluateHand(playerHand) > 17) {
+      circleColor = 'orange';
+    } else if (evaluateHand(playerHand) > 11) {
+      circleColor = 'yellow';
+    }
+
+    console.log(circleColor);
+    document.querySelector('#playerHandValue').style.backgroundColor =
+      circleColor;
 
     cardCount++;
     //disable doubleDown if more than 2 cards
@@ -434,6 +465,8 @@ const discardHands = function () {
   document.querySelector('#cutCardAlert').innerHTML = '';
   document.querySelector('#payoutInformation').innerHTML = '';
   document.querySelector('#splitInformation').innerHTML = '';
+  document.querySelector('#splitDiv').style.visibility = 'hidden';
+  // go away == document.querySelector('#splitDiv').style.display = 'none';
 };
 
 const newGame = function () {
