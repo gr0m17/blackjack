@@ -24,6 +24,175 @@ const ranks = [
   'Queen',
   'King',
 ];
+
+const strategyGuide = [
+  [null, null, null, null, null, null, null, null, null, null, null],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  ['hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit', 'hit'],
+  [
+    'hit',
+    'hit',
+    'hit',
+    'double',
+    'double',
+    'double',
+    'double',
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+  ],
+  [
+    'hit',
+    'hit',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'hit',
+  ],
+  [
+    'hit',
+    'hit',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+    'double',
+  ],
+  [
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+    'stand',
+    'stand',
+    'stand',
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+  ],
+  [
+    'hit',
+    'hit',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+  ],
+  [
+    'hit',
+    'hit',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+  ],
+  [
+    'hit',
+    'hit',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+  ],
+  [
+    'hit',
+    'hit',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'hit',
+    'hit',
+    'hit',
+    'hit',
+  ],
+  [
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+  ],
+  [
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+  ],
+  [
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+  ],
+  [
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+    'stand',
+  ],
+];
+
 const cards = [];
 let cardCount = 0;
 let cardhtml;
@@ -111,9 +280,8 @@ const evaluateHand = function (handArray) {
     }
   }
   if (handValue > 21) {
-    if (aceCount > 0) {
+    for (let i = aceCount; handValue > 21 && i > 0; i--) {
       handValue -= 10;
-      aceCount--;
     }
   }
   return handValue;
@@ -254,6 +422,10 @@ const hitDealer = function () {
     evaluateHand(dealerHand);
 };
 const checkBlackjack = function () {
+  if (dealerHand[0].rank == 1) {
+    console.log('insurance? no? okay!');
+    //insurance goes here.
+  }
   if (evaluateHand(dealerHand) == 21) {
     document.querySelector('#blackjackZone').textContent = 'Dealer Blackjack!';
     stayHand();
@@ -310,6 +482,8 @@ const splitCards = function () {
 };
 
 const hitPlayer = function () {
+  // console.log(circleColor);
+
   if (!staySplit) {
     //split behavior
     splitHand[splitHand.length] = dealCard();
@@ -334,15 +508,23 @@ const hitPlayer = function () {
       evaluateHand(splitHand);
     let circleColor = 'green';
 
-    if (evaluateHand(splitHand) > 21) {
-      circleColor = 'red';
-    } else if (evaluateHand(splitHand) > 17) {
-      circleColor = 'orange';
-    } else if (evaluateHand(splitHand) > 11) {
-      circleColor = 'yellow';
-    }
+    let lookupRow = evaluateHand(playerHand);
+    console.log(lookupRow);
+    let lookupColumn = evaluateHand(dealerHand[0]);
+    console.log(lookupColumn);
+    let basicStrat = strategyGuide[lookupRow][lookupColumn];
 
+    console.log(basicStrat);
+
+    if (basicStrat == 'stay') {
+      circleColor = 'red';
+    } else if (basicStrat == 'double') {
+      circleColor = 'blue';
+    }
     console.log(circleColor);
+
+    //color row
+
     document.querySelector('#splitHandValue').style.backgroundColor =
       circleColor;
 
@@ -364,14 +546,28 @@ const hitPlayer = function () {
 
     let circleColor = 'green';
 
-    if (evaluateHand(playerHand) > 21) {
-      circleColor = 'red';
-    } else if (evaluateHand(playerHand) > 17) {
-      circleColor = 'orange';
-    } else if (evaluateHand(playerHand) > 11) {
-      circleColor = 'yellow';
+    let lookupColumn = evaluateHand([dealerHand[0]]);
+    if (lookupColumn == 11) {
+      lookupColumn = 1;
     }
+    let lookupRow = evaluateHand(playerHand);
+    if (lookupRow == 21) {
+      circleColor = 'white';
+    } else if (lookupRow > 21) {
+      circleColor = 'red';
+    } else {
+      let basicStrat = strategyGuide[lookupRow][lookupColumn];
 
+      console.log(lookupRow);
+      console.log(lookupColumn);
+      console.log(basicStrat);
+
+      if (basicStrat == 'stand') {
+        circleColor = 'red';
+      } else if (basicStrat == 'double') {
+        circleColor = 'lightblue';
+      }
+    }
     console.log(circleColor);
     document.querySelector('#playerHandValue').style.backgroundColor =
       circleColor;
@@ -466,6 +662,7 @@ const discardHands = function () {
   document.querySelector('#payoutInformation').innerHTML = '';
   document.querySelector('#splitInformation').innerHTML = '';
   document.querySelector('#splitDiv').style.visibility = 'hidden';
+  document.querySelector('.blackjack').style.display = 'none';
   // go away == document.querySelector('#splitDiv').style.display = 'none';
 };
 
@@ -603,9 +800,12 @@ const payBet = function (
 ) {
   if (isBlackjack) {
     bet = +bet + bet * 0.5;
+    document.querySelector('.blackjack').style.display = 'inline';
     document.querySelector(
       '#payoutInformation'
-    ).textContent = ` Blackjack pays 3:2 payout amount: ${betAmount * 1.5}`;
+    ).textContent = ` Blackjack pays 3:2. bet: ${betAmount} payout amount: ${
+      betAmount * 1.5
+    }`;
     //add back wager to payout
     bankroll += bet + betAmount;
     blackjackWin = false;
