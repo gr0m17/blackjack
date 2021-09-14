@@ -508,21 +508,28 @@ const hitPlayer = function () {
       evaluateHand(splitHand);
     let circleColor = 'green';
 
-    let lookupRow = evaluateHand(playerHand);
-    console.log(lookupRow);
-    let lookupColumn = evaluateHand(dealerHand[0]);
-    console.log(lookupColumn);
-    let basicStrat = strategyGuide[lookupRow][lookupColumn];
-
-    console.log(basicStrat);
-
-    if (basicStrat == 'stay') {
-      circleColor = 'red';
-    } else if (basicStrat == 'double') {
-      circleColor = 'blue';
+    let lookupColumn = evaluateHand([dealerHand[0]]);
+    if (lookupColumn == 11) {
+      lookupColumn = 1;
     }
-    console.log(circleColor);
+    let lookupRow = evaluateHand(splitHand);
+    if (lookupRow == 21) {
+      circleColor = 'white';
+    } else if (lookupRow > 21) {
+      circleColor = 'red';
+    } else {
+      let basicStrat = strategyGuide[lookupRow][lookupColumn];
 
+      console.log(lookupRow);
+      console.log(lookupColumn);
+      console.log(basicStrat);
+
+      if (basicStrat == 'stand') {
+        circleColor = 'red';
+      } else if (basicStrat == 'double') {
+        circleColor = 'lightblue';
+      }
+    }
     //color row
 
     document.querySelector('#splitHandValue').style.backgroundColor =
