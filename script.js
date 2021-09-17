@@ -212,6 +212,11 @@ let splitBet = false;
 let splitDoubleBet = false;
 let betString = '';
 let staySplit = true;
+let redAce = document.querySelector('.redAce');
+let redFace = document.querySelector('.redFace');
+let greenAce = document.querySelector('.greenAce');
+let greenFace = document.querySelector('.greenFace');
+
 // Card Generator
 const makeCard = function (suit, rank) {
   // yposition = 0 for 0, -80 for 1, -160 for 2, -240 for 3
@@ -380,12 +385,12 @@ const finalScore = function () {
   } else if (finalDealer > finalPlayer) {
     //dealer wins
     console.log('dealer wins!');
-    document.querySelector('#messageCenter').textContent = ` Dealer wins!`;
+    document.querySelector('#messageCenter').textContent = `Dealer wins!`;
     playerScore--;
     releaseBet();
   } else {
     console.log('player wins!');
-    document.querySelector('#messageCenter').textContent = ` You win!`;
+    document.querySelector('#messageCenter').textContent = `You win!`;
     playerScore++;
     payBet();
   }
@@ -421,14 +426,82 @@ const hitDealer = function () {
   document.querySelector('#dealerHandValue').textContent =
     evaluateHand(dealerHand);
 };
-const checkBlackjack = function () {
+
+const dealerAnimation = function (dealerHand) {
+  console.log(dealerHand);
+  if (dealerHand[0].rank == 1) {
+    if (dealerHand[1].rank > 9) {
+      //display red light with ace.
+      console.log('RED ACE');
+      showDealerGif('redAce');
+    } else {
+      // display green light with ace
+      console.log('green ACE');
+      showDealerGif('greenAce');
+    }
+  } else if (dealerHand[0].rank > 9) {
+    if (dealerHand[1].rank == 1) {
+      //display red light with face
+      console.log('RED FACE');
+      showDealerGif('redFace');
+    } else {
+      //display green light with face
+      console.log('GREEN FACE');
+      showDealerGif('greenFace');
+    }
+  }
+};
+const showDealerGif = function (statusName) {
+  document.querySelector('#messageCenter').textContent =
+    'checking for blackjack...';
+  document.getElementById(`${statusName}GIF`).style.display = 'inline';
+  document.querySelector(`.${statusName}Window`).style.display = 'inline';
+  console.log(statusName);
+  setTimeout(function () {
+    console.log(statusName, 'timeout');
+    document.querySelector('#messageCenter').textContent = ' ';
+    document.getElementById(`${statusName}GIF`).style.display = 'none';
+    document.querySelector(`.${statusName}Window`).style.display = 'none';
+  }, 1500);
+};
+const offerInsurance = function () {
   if (dealerHand[0].rank == 1) {
     console.log('insurance? no? okay!');
+    dealerAnimation(dealerHand);
     //insurance goes here.
+    if (evaluateHand(dealerHand) == 21) {
+      dealerAnimation(dealerHand);
+      setTimeout(function () {
+        document.querySelector('#blackjackZone').textContent =
+          'Dealer Blackjack!';
+        stayHand();
+      }, 1650);
+    }
   }
-  if (evaluateHand(dealerHand) == 21) {
-    document.querySelector('#blackjackZone').textContent = 'Dealer Blackjack!';
-    stayHand();
+
+  // document.getElementById('shuffleGIF').style.display = 'inline';
+  // document.querySelector('.shuffleWindow').style.display = 'inline';
+  // document.querySelector('#cutCardAlert').innerHTML = '';
+  // setTimeout(function () {
+  //   document.getElementById('shuffleGIF').style.display = 'none';
+  //   document.querySelector('.shuffleWindow').style.display = 'none';
+  //   document.querySelector('#cutCardAlert').innerHTML = `Shuffling Complete!`;
+  // }, 2000);
+};
+const checkBlackjack = function () {
+  if (dealerHand[0].rank == 1) {
+    offerInsurance();
+    //insurance goes here.
+  } else {
+    if (evaluateHand(dealerHand) == 21) {
+      document.querySelector('#blackjackZone').textContent =
+        'Dealer Blackjack!';
+      dealerAnimation(dealerHand);
+      stayHand();
+    }
+    if (dealerHand[0].rank > 9) {
+      dealerAnimation(dealerHand);
+    }
   }
 };
 const hitDealerFaceDown = function () {

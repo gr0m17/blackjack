@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Play&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Play&family=Montserrat:wght@900&family=Press+Start+2P&display=swap');
 .playingCard {
   margin: 2px;
   float: left;
@@ -17,10 +17,7 @@
   flex-direction: column;
   align-items: center;
 } */
-#messageCenter {
-  height: 20px;
-}
-#blackjackZone {
+#payoutInformation {
   height: 20px;
 }
 #cutCardAlert {
@@ -40,7 +37,7 @@
     top: 0px;
   }
 }
-.shuffleWindow {
+.shuffleWindow .greenFaceWindow {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -50,12 +47,43 @@
 }
 #shuffleGIF {
   position: absolute;
-  top: 30%;
-  left: 30%;
+  top: 10%;
+  left: 20%;
   z-index: 21;
   margin: auto;
 }
-
+#greenFaceGIF {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 280px;
+  z-index: 21;
+  margin: auto;
+}
+#redFaceGIF {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 280px;
+  z-index: 21;
+  margin: auto;
+}
+#greenAceGIF {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 280px;
+  z-index: 21;
+  margin: auto;
+}
+#redAceGIF {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 280px;
+  z-index: 21;
+  margin: auto;
+}
 .gameArea {
   display: flex;
   flex-direction: column;
@@ -89,14 +117,24 @@
   z-index: 10;
 }
 .blackjack {
-  font-size: 36px;
+  font-size: 18px;
   font-family: 'Press Start 2P', cursive;
   background: -webkit-linear-gradient(rgb(255, 208, 0), rgb(255, 0, 0));
   -webkit-background-clip: text;
-  font-weight: bold;
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
+  overflow: visible;
+}
+#messageCenter {
+  font-size: large;
+  font-family: 'Montserrat', sans-serif;
+  height: 60px;
+}
+#blackjackZone {
+  font-size: large;
+  font-family: 'Montserrat', sans-serif;
+  height: 60px;
 }
 /* #hit {
   background-color: green;
