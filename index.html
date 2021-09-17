@@ -8,23 +8,24 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body style="background-color: #41c232">
-    <div class="redFaceWindow">
-      <img id="redFaceGIF" src="check_face_red_001.gif" style="display: none" />
-    </div>
-    <div class="redAceWindow">
-      <img id="redAceGIF" src="check_ace_red_001.gif" style="display: none" />
-    </div>
-    <div class="greenFaceWindow">
-      <img id="greenFaceGIF" src="check_face_green_001.gif" style="display: none" />
-    </div>
-    <div class="greenAceWindow">
-      <img id="greenAceGIF" src="check_ace_green_001.gif" style="display: none" />
-    </div>
-    <div class="shuffleWindow">
-      <img id="shuffleGIF" src="shuffle_001.gif" style="display: none" />
-    </div>
     <h1>Blackjack v1.2</h1>
     <div id="gameArea" class="gameArea">
+      <div class="animationWindow">
+        <div class="redFaceWindow">
+          <img id="redFaceGIF" src="check_face_red_001.gif" style="display: none" />
+        </div>
+        <div class="redAceWindow">
+          <img id="redAceGIF" src="check_ace_red_001.gif" style="display: none" />
+        </div>
+        <div class="greenFaceWindow">
+          <img id="greenFaceGIF" src="check_face_green_001.gif" style="display: none" />
+        </div>
+        <div class="greenAceWindow">
+          <img id="greenAceGIF" src="check_ace_green_001.gif" style="display: none" />
+        </div>
+        <div class="shuffleWindow">
+          <img id="shuffleGIF" src="shuffle_001.gif" style="display: none" />
+        </div></div>
       <div id="dealer" class="hand">
         Dealer
         <div id="dealerHandValue" class="handValue"><h2>Place a bet to begin.</h2></div>
@@ -81,13 +82,6 @@
           value="Double Down!"
           disabled="disabled"
         />
-        <input
-          type="button"
-          id="newGame"
-          onclick="newGame()"
-          value=""
-          disabled="disabled"
-        />
       <br />
       <input
         type="button"
@@ -98,7 +92,7 @@
       <input type="number" id="wagerAmount" placeholder="$$$" step="5" />
       <div id="wins">_</div>
 
-      <div id="bankroll">🦴500</div>
+      <div id="bankroll">Starting bankroll: $500</div>
     </div>
 
     <script src="script.js"></script>

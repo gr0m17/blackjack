@@ -45,49 +45,52 @@
   z-index: 1000;
   display: none;
 }
+.animationWindow {
+  position: absolute;
+}
 #shuffleGIF {
   position: absolute;
-  top: 10%;
-  left: 20%;
+  top: 0%;
+  left: 0%;
   z-index: 21;
   margin: auto;
 }
 #greenFaceGIF {
   position: absolute;
-  top: 10%;
-  left: 20%;
-  width: 280px;
+  top: 0%;
+  left: 0%;
+  width: 200px;
   z-index: 21;
   margin: auto;
 }
 #redFaceGIF {
   position: absolute;
-  top: 10%;
-  left: 20%;
-  width: 280px;
+  top: 0%;
+  left: 0%;
+  width: 200px;
   z-index: 21;
   margin: auto;
 }
 #greenAceGIF {
   position: absolute;
-  top: 10%;
-  left: 20%;
-  width: 280px;
+  top: 0%;
+  left: 0%;
+  width: 200px;
   z-index: 21;
   margin: auto;
 }
 #redAceGIF {
   position: absolute;
-  top: 10%;
-  left: 20%;
-  width: 280px;
+  top: 0%;
+  left: 0%;
+  width: 200px;
   z-index: 21;
   margin: auto;
 }
 .gameArea {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 80%;
   margin: auto;
 }
 /* .activeHand {
@@ -97,8 +100,8 @@
 .hand {
   position: relative;
   min-height: 100px;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  /* padding-top: 2rem;*/
+  padding-bottom: 1rem;
 }
 .handValue {
   font-family: 'Play';

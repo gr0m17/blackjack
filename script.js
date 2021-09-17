@@ -394,7 +394,7 @@ const finalScore = function () {
     playerScore++;
     payBet();
   }
-  document.querySelector('#newGame').removeAttribute('disabled');
+  // document.querySelector('#newGame').removeAttribute('disabled');
   document.querySelector('#wins').innerHTML = `wins: ${playerScore}`;
   console.log(playerScore);
 };
@@ -494,14 +494,16 @@ const checkBlackjack = function () {
     //insurance goes here.
   } else {
     if (evaluateHand(dealerHand) == 21) {
-      document.querySelector('#blackjackZone').textContent =
-        'Dealer Blackjack!';
       dealerAnimation(dealerHand);
-      stayHand();
+      setTimeout(function () {
+        document.querySelector('#blackjackZone').textContent =
+          'Dealer Blackjack!';
+        stayHand();
+      }, 1650);
     }
-    if (dealerHand[0].rank > 9) {
-      dealerAnimation(dealerHand);
-    }
+  }
+  if (dealerHand[0].rank > 9) {
+    dealerAnimation(dealerHand);
   }
 };
 const hitDealerFaceDown = function () {
@@ -754,10 +756,10 @@ const newGame = function () {
     discard.length = 0;
     shuffleArray(cards);
   }
-  document
-    .querySelector('#newGame')
+  // document
+  //   .querySelector('#newGame')
 
-    .setAttribute('disabled', 'disabled');
+  //   .setAttribute('disabled', 'disabled');
   document.querySelector('#hit').removeAttribute('disabled');
   document.querySelector('#stay').removeAttribute('disabled');
   // document
